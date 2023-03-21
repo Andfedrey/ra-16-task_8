@@ -1,12 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, {  useEffect, useState } from 'react'
+import saveInfoCard from './useLocaleStorage';
 
 export default function Details({info}) {
-  const [detail, setDetail] = useState('')
+  const [localStorageInfo, setLocalStorageInfo] = useState(JSON.parse(localStorage.getItem('data')) || []);
+
   const [loader, setLoader] = useState(false);
 
+  const result = [...localStorageInfo].filter(el => el.id === info.id)[0]
+  const [detail, setDetail] = useState('')
+  console.log(detail);
+  
   useEffect(() => {
-      if(info.start){
-        setLoader((prev) => true)
+    if(info.start && !result){
+      setLoader((prev) => true)
       fetch(`https://raw.githubusercontent.com/netology-code/ra16-homeworks/master/hooks-context/use-effect/data/${info.id}.json`)
       .then((res) => {
         if(!res.ok){
@@ -15,9 +21,15 @@ export default function Details({info}) {
         setLoader((prev) => false)
         return res.json()
       })
-      .then(data => setDetail(data))
-      }
+      .then(data => {
+          saveInfoCard(data, setLocalStorageInfo)
+          setDetail(data)
+        }
+      )
+    }
+    setDetail(result)
   }, [info])
+
   return (
     <>
     {
