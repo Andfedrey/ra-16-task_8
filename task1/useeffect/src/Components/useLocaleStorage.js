@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 
 const saveInfoCard = (data, stateHook) => {
   const storageData = JSON.parse(localStorage.getItem('data')) || []
